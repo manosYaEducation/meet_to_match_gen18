@@ -76,7 +76,7 @@ function navbar() {
     <nav class="navbar navbar-expand-lg">
       <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">
-          <span class="brand-dot me-2"></span>Meet to Match POC
+          <span class="brand-dot me-2"></span>Meet to Match Gen18
         </a>
         <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
           <span class="navbar-toggler-icon"></span>
@@ -108,7 +108,7 @@ function footer() {
       <div class="container py-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <div>
           <a class="navbar-brand fw-bold d-inline-flex align-items-center gap-2" href="index.html">
-            <span class="brand-dot"></span>Meet to Match POC
+            <span class="brand-dot"></span>Meet to Match Gen18
           </a>
           <p class="small text-white-50 mb-0 mt-1">Conecta asistentes, expositores y organizaciones durante el evento.</p>
         </div>

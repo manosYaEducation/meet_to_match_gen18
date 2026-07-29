@@ -1,4 +1,4 @@
-# Meet to Match POC
+# Meet to Match Gen18
 
 Prueba de concepto simple para el evento.
 
@@ -78,4 +78,4 @@ C:\xampp\php\php.exe scripts\importar_luma_cli.php "C:\ruta\exportacion-luma.csv
 
 ## Alcance
 
-Este POC no incluye login real, chat, sincronizacion con calendarios externos, videollamadas, IA ni integracion directa con la API de Luma. La carga desde Luma se realiza manualmente mediante CSV.
+Este proyecto no incluye login real, chat, sincronizacion con calendarios externos, videollamadas, IA ni integracion directa con la API de Luma. La carga desde Luma se realiza manualmente mediante CSV.

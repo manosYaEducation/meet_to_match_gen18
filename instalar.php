@@ -13,7 +13,7 @@ try {
     asegurarEsquema($conn, $nameDb);
     responder([
         'exito' => true,
-        'mensaje' => 'Tablas POC creadas y datos demo cargados',
+        'mensaje' => 'Tablas Gen18 creadas y datos demo cargados',
         'siguiente_paso' => 'Abrir registro.html'
     ]);
 } catch (Exception $e) {

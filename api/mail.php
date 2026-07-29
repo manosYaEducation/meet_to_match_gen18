@@ -95,10 +95,10 @@ function enviarCorreoSolicitudReunion(PDO $conn, int $solicitudId)
             : PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = (int) envValor('MAIL_PORT', 587);
 
-        $mail->setFrom(envValor('MAIL_FROM'), envValor('MAIL_FROM_NAME', 'Meet to Match POC'));
+        $mail->setFrom(envValor('MAIL_FROM'), envValor('MAIL_FROM_NAME', 'Meet to Match Gen18'));
         $mail->addAddress($solicitud['receptor_correo'], $nombreReceptor);
         $mail->isHTML(true);
-        $mail->Subject = 'Nueva solicitud de reunion - Meet to Match POC';
+        $mail->Subject = 'Nueva solicitud de reunion - Meet to Match Gen18';
         $mail->Body = "
             <div style='font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; color: #1f2933;'>
                 <div style='background:#3aa9dc; color:white; padding:18px 22px;'>

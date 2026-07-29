@@ -13,7 +13,7 @@ MAIL_PORT=587
 MAIL_USERNAME=correo@tu-dominio.cl
 MAIL_PASSWORD=REEMPLAZAR
 MAIL_FROM=correo@tu-dominio.cl
-MAIL_FROM_NAME="Meet to Match POC"
+MAIL_FROM_NAME="Meet to Match Gen18"
 ```
 
 - `MAIL_ENABLED`: con `true`, el sistema intenta enviar un correo al crear una

@@ -1,4 +1,4 @@
--- Esquema y datos demo de Meet to Match POC.
+-- Esquema y datos demo de Meet to Match Gen18.
 CREATE TABLE IF NOT EXISTS eventos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(180) NOT NULL,
