@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Participantes - Meet to Match POC</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css?v=20260707-1" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#151515">
+</head>
+<body>
+  <div id="app-navbar"></div>
+
+  <main class="hero min-vh-100">
+    <div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="h2 mb-1 text-white">Participantes y expositores</h1>
+        <p class="text-white opacity-75 mb-0">Busca personas de interés y solicita reuniones privadas.</p>
+      </div>
+      <a class="btn btn-primary align-self-md-start" href="solicitudes.html">Ver mis solicitudes</a>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <label class="form-label">Buscar por nombre, empresa, cargo o interés</label>
+        <div class="row g-2 align-items-end">
+          <div class="col-md-8">
+            <input id="buscar" class="form-control" placeholder="Ej: expositor, tecnología, INACAP">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label mb-1">Filtrar por cargo</label>
+            <select id="filtro-cargo" class="form-select">
+              <option value="">Todos los cargos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="participantes-mensaje"></div>
+    <div id="participantes-grid" class="row g-3"></div>
+    </div>
+  </main>
+
+  <div class="modal fade" id="perfilModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content" data-theme="dark" style="background-color: var(--poc-panel-bg); color: var(--poc-text);">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="perfilTitulo">Perfil</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="perfilContenido"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="btnAbrirSolicitud">Solicitar reunión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="solicitudModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="solicitud-form">
+          <div class="modal-header">
+            <h2 class="modal-title h5">Solicitar reunión</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="receptor_id" id="receptor_id">
+            <p class="small-muted" id="solicitudDestino"></p>
+            <label class="form-label" for="bloque_horario_id">Horario disponible</label>
+            <select class="form-select" name="bloque_horario_id" id="bloque_horario_id" required>
+              <option value="">Cargando horarios...</option>
+            </select>
+            <div class="form-text mb-3" id="horarios-ayuda">Se muestran horarios libres para ambas personas.</div>
+            <label class="form-label">Mensaje para explicar el motivo</label>
+            <textarea class="form-control" name="mensaje" rows="4" placeholder="Hola, me gustaría reunirme contigo para conversar sobre..."></textarea>
+            <div id="solicitud-mensaje" class="mt-3"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnEnviarSolicitud">Enviar solicitud</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-footer"></div>
+  <div id="qr-modals-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="js/app.js?v=20260721-1"></script>
+  <script src="js/participantes.js?v=20260721-1"></script>
+</body>
+</html>

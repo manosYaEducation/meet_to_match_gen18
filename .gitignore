@@ -1,0 +1,27 @@
+# Configuracion local y secretos
+.env
+.env.*
+!.env.ejemplo
+
+# Dependencias instaladas por Composer
+/vendor/
+
+# Archivos temporales y registros
+*.log
+*.tmp
+*.cache
+
+# Exportaciones reales de Luma (solo se versiona el ejemplo ficticio)
+/datos/*.csv
+!/datos/luma_participantes_demo.csv
+
+# Herramientas locales de tunel; instalarlas fuera del repositorio
+/ngrok.exe
+/ngrok.zip
+/pinggy*
+
+# Configuracion personal del editor y del sistema
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db
