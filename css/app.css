@@ -481,3 +481,298 @@ h1, h2, h3, h4, h5, h6, .navbar-brand, .display-5 {
   background: var(--poc-primary);
   flex: 0 0 auto;
 }
+
+/* =========================================================
+   PARTICIPANTES - DISEÑO ESTRUCTURADO Y RESPONSIVE
+   ========================================================= */
+
+.filter-sidebar {
+  border-radius: 12px;
+  background: linear-gradient(145deg, var(--poc-panel-bg), var(--poc-panel-bg-alt));
+  border: 1px solid var(--poc-border);
+}
+
+.search-input-wrapper input {
+  border-radius: 8px;
+}
+
+.filter-mobile-btn {
+  background: var(--poc-panel-bg);
+  border-color: var(--poc-border);
+  color: var(--poc-text);
+}
+
+.filter-radio-list .filter-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #ffffff;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.filter-radio-list .filter-radio-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.filter-radio-list .filter-radio-item.active {
+  background: rgba(55, 169, 223, 0.16);
+  border-color: var(--poc-primary);
+  font-weight: 600;
+}
+
+.filter-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+}
+
+.filter-radio-item.active .filter-dot {
+  background: var(--poc-primary);
+  border-color: var(--poc-primary);
+  box-shadow: 0 0 6px var(--poc-primary);
+}
+
+.filter-name {
+  font-size: 0.9rem;
+}
+
+.participant-card-v2 {
+  background: linear-gradient(180deg, var(--poc-panel-bg) 0%, var(--poc-panel-bg-alt) 100%);
+  border: 1px solid var(--poc-border);
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  overflow: hidden;
+}
+
+.participant-card-v2:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  border-color: var(--poc-primary);
+}
+
+.participant-avatar-large {
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.avatar-initials {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.participant-role-sub {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.card-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
+}
+
+.prop-item {
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.prop-label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 4px;
+}
+
+.badge-tag {
+  background: rgba(55, 169, 223, 0.15);
+  color: #72cdfa;
+  border: 1px solid rgba(55, 169, 223, 0.3);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-role-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.badge-role-expositor {
+  background: rgba(245, 130, 32, 0.2);
+  color: #ff9b45;
+  border: 1px solid rgba(245, 130, 32, 0.4);
+}
+
+.badge-role-asistente {
+  background: rgba(55, 169, 223, 0.2);
+  color: #72cdfa;
+  border: 1px solid rgba(55, 169, 223, 0.4);
+}
+
+.badge-role-organizador {
+  background: rgba(155, 89, 182, 0.2);
+  color: #d796fa;
+  border: 1px solid rgba(155, 89, 182, 0.4);
+}
+
+.participant-link-more {
+  color: var(--poc-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.participant-link-more:hover {
+  color: #72cdfa;
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
+.btn-action-pill {
+  border-radius: 999px !important;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.badge-xs {
+  font-size: 0.72rem;
+  padding: 2px 6px;
+}
+
+/* Optimización móvil */
+@media (max-width: 767.98px) {
+  .participant-avatar-large {
+    width: 90px;
+    height: 90px;
+  }
+
+  .avatar-initials {
+    font-size: 1.85rem;
+  }
+
+  .participant-card-v2 .card-body {
+    padding: 1.25rem !important;
+  }
+
+  .filter-sidebar {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* =========================================================
+   MODAL DE SOLICITUD DE REUNIÓN - SELECTOR DE HORARIOS
+   ========================================================= */
+
+.modal-participant-preview {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--poc-border);
+}
+
+.slots-scroll-area {
+  max-height: 240px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--poc-border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--poc-primary) rgba(0, 0, 0, 0.3);
+}
+
+.slots-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slots-scroll-area::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.slots-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--poc-primary);
+  border-radius: 4px;
+}
+
+.slots-date-header {
+  color: var(--poc-primary);
+  letter-spacing: 0.03em;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.slot-time-btn {
+  background: var(--poc-input-bg);
+  border: 1px solid var(--poc-input-border);
+  color: #ffffff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-time-btn:hover {
+  border-color: var(--poc-primary);
+  background: rgba(55, 169, 223, 0.2);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.slot-time-btn.active {
+  background: var(--poc-primary) !important;
+  border-color: var(--poc-primary) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(55, 169, 223, 0.6);
+  transform: translateY(-1px);
+}
+
+.selected-slot-pill {
+  background: rgba(55, 169, 223, 0.15);
+  border: 1px solid rgba(55, 169, 223, 0.4);
+}
+
+@media (max-width: 575.98px) {
+  .slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .slot-time-btn {
+    font-size: 0.8rem;
+    padding: 7px 6px;
+  }
+}
