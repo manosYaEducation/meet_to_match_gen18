@@ -27,9 +27,14 @@
       </p>
     </div>
 
-    <a class="btn btn-primary" href="adm/solicitudes.html">
+    <button
+      class="btn btn-primary"
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#correoAccesoModal"
+    >
       Ver mis solicitudes
-    </a>
+    </button>
   </div>
 
 
@@ -676,6 +681,104 @@
 
 </div>
 
+
+  </div>
+
+  <!-- =========================================================
+       MODAL CORREO DE ACCESO (paso previo a editar perfil)
+       ========================================================= -->
+
+  <div
+    class="modal fade"
+    id="correoAccesoModal"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+
+    <div class="modal-dialog modal-dialog-centered">
+
+      <div
+        class="modal-content"
+        data-theme="dark"
+        style="
+          background-color: var(--poc-panel-bg);
+          color: var(--poc-text);
+          border: 1px solid var(--poc-border);
+        "
+      >
+
+        <form id="correo-acceso-form">
+
+          <div
+            class="modal-header border-bottom border-secondary border-opacity-25 pb-3"
+          >
+
+            <h2 class="modal-title h5 text-white mb-0 fw-bold">
+              Ver mis solicitudes
+            </h2>
+
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+
+          </div>
+
+          <div class="modal-body p-4">
+
+            <label
+              class="form-label text-white small fw-bold mb-1"
+              for="correo-acceso-input"
+            >
+              Tu correo electrónico *
+            </label>
+
+            <input
+              type="email"
+              id="correo-acceso-input"
+              name="correo"
+              class="form-control"
+              placeholder="tu@correo.cl"
+              autocomplete="email"
+              maxlength="190"
+              required
+            >
+
+            <div class="form-text text-white opacity-50">
+              Debe corresponder al correo con el que te registraste
+              en el evento.
+            </div>
+
+          </div>
+
+          <div
+            class="modal-footer border-top border-secondary border-opacity-25"
+          >
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary px-3"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary rounded-pill px-4 fw-bold"
+            >
+              Continuar
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
 
   </div>
 

@@ -154,3 +154,315 @@ Se llama **después** del `commit()` del `POST`, igual que en `solicitudes.php` 
 - El endpoint público (`api/`) sigue una filosofía de **no dar pistas** a un atacante: mismos mensajes de error, mismo tiempo de respuesta idealmente, sin exponer IDs internos. `api/solicitudes.php` es la referencia de estilo a seguir al pie de la letra.
 - `adm/api/mail.php` usa PHPMailer vía `vendor/autoload.php` (Composer) y variables de entorno en `.env` (`MAIL_ENABLED`, `MAIL_HOST`, etc. — ver `adm/docs/CONFIGURACION_SMTP.md`).
 - Convención de ramas/commits del usuario: ver skill `git-control` (Conventional Commits, ramas `Feature/<Autor>/<fecha>-<descripcion>`, PR siempre hacia una rama de trabajo, nunca directo a `main`).
+
+
+
+Avance al 10-09-2026
+
+
+# Prueba — Edición de perfil mediante Token
+
+## Estado actual
+
+El flujo de edición de perfil mediante token está funcionando correctamente en el ambiente de testing:
+
+```text
+https://testing.meettomatch.alphadocere.cl/
+```
+
+El **envío automático del enlace por correo todavía no está activo**.
+
+Por ahora, el flujo se prueba generando/obteniendo manualmente un `token` válido y abriendo directamente la URL de edición.
+
+---
+
+## 1. URL de edición
+
+La página de edición utiliza:
+
+```text
+editar-perfil.html?token=TOKEN
+```
+
+Ejemplo:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html?token=TOKEN
+```
+
+Donde:
+
+```text
+TOKEN
+```
+
+corresponde al token temporal asociado al usuario cuyo perfil se desea editar.
+
+> No utilizar `guid` en esta prueba.
+> El parámetro actualmente implementado es `token`.
+
+---
+
+## 2. Flujo actual de prueba
+
+Mientras el envío por correo no esté habilitado, la prueba se realiza manualmente.
+
+### Paso 1 — Obtener un token válido
+
+Se debe disponer de un `token` válido asociado a un perfil existente.
+
+El token debe corresponder al mecanismo implementado por el backend para autorizar la edición.
+
+### Paso 2 — Construir la URL
+
+Tomar el token y agregarlo como parámetro `token`:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html?token=TOKEN
+```
+
+Por ejemplo:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html?token=abc123...
+```
+
+### Paso 3 — Abrir la URL
+
+Abrir la URL directamente en el navegador.
+
+La página:
+
+```text
+editar-perfil.html
+```
+
+debe detectar el parámetro:
+
+```text
+?token=
+```
+
+y utilizarlo para consultar/cargar el perfil correspondiente.
+
+---
+
+## 3. Resultado esperado
+
+Al abrir un token válido:
+
+1. Se identifica el perfil asociado al token.
+2. Se cargan los datos actuales del usuario.
+3. El formulario permite modificar los datos autorizados.
+4. El usuario puede guardar los cambios.
+5. Los cambios quedan persistidos correctamente.
+6. El flujo no requiere iniciar sesión tradicionalmente.
+
+---
+
+## 4. Prueba de edición
+
+Una vez cargado el perfil:
+
+### Modificar un dato
+
+Cambiar, por ejemplo:
+
+```text
+Nombre
+Apellido
+Empresa
+Cargo
+Intereses
+Busca
+Descripción
+```
+
+según los campos disponibles actualmente.
+
+### Guardar
+
+Ejecutar la acción de guardar.
+
+### Verificar
+
+Comprobar que:
+
+* aparece una confirmación de actualización;
+* no se produce un error JavaScript;
+* el backend responde correctamente;
+* el dato modificado queda persistido;
+* al volver a cargar el perfil, el cambio continúa presente.
+
+---
+
+## 5. Prueba con token inválido
+
+También debe probarse una URL como:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html?token=TOKEN_INVALIDO
+```
+
+### Resultado esperado
+
+El sistema **no debe permitir editar un perfil** cuando el token:
+
+* no existe;
+* es inválido;
+* está mal formado;
+* no corresponde a un usuario.
+
+Debe mostrar un mensaje controlado indicando que el enlace no es válido o no permite acceder a la edición.
+
+---
+
+## 6. Prueba sin token
+
+Abrir:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html
+```
+
+### Resultado esperado
+
+El sistema debe detectar que no existe:
+
+```text
+?token=
+```
+
+y evitar cargar o editar un perfil.
+
+Debe mostrar un mensaje apropiado indicando que se necesita un enlace válido de edición.
+
+---
+
+## 7. Prueba de persistencia
+
+Después de modificar un perfil:
+
+1. Guardar los cambios.
+2. Cerrar la página.
+3. Volver a abrir el mismo enlace con el token.
+4. Verificar que aparecen los datos actualizados.
+
+Esto permite comprobar que el flujo completo:
+
+```text
+Token
+  ↓
+Identificación del perfil
+  ↓
+Carga del perfil
+  ↓
+Edición
+  ↓
+Guardado
+  ↓
+Persistencia
+```
+
+está funcionando.
+
+---
+
+## 8. Envío por correo — pendiente
+
+El mecanismo final contempla que el usuario solicite editar su perfil y reciba por correo un enlace similar a:
+
+```text
+https://testing.meettomatch.alphadocere.cl/editar-perfil.html?token=TOKEN
+```
+
+Actualmente esta parte **todavía no debe considerarse activa**.
+
+El estado actual es:
+
+```text
+┌─────────────────────────────────────┐
+│  Usuario solicita edición           │
+│              ↓                      │
+│  Generación / obtención del token   │
+│              ↓                      │
+│  URL de edición                     │
+│              ↓                      │
+│  editar-perfil.html?token=...       │
+│              ↓                      │
+│  Carga del perfil                   │
+│              ↓                      │
+│  Edición                            │
+│              ↓                      │
+│  Guardado                           │
+└─────────────────────────────────────┘
+
+        ✉️ Envío automático
+             PENDIENTE
+```
+
+---
+
+## 9. Criterio para considerar funcionando el MVP
+
+El flujo de edición puede considerarse funcional en testing cuando:
+
+* [x] `editar-perfil.html` existe.
+* [x] Recibe `token` mediante query string.
+* [x] Un token válido permite identificar el perfil.
+* [x] El perfil se carga correctamente.
+* [x] El formulario permite editar los campos autorizados.
+* [x] Los cambios pueden guardarse.
+* [x] Los cambios quedan persistidos.
+* [ ] El enlace se genera automáticamente.
+* [ ] El enlace se envía automáticamente por correo.
+* [ ] Se valida expiración del token.
+* [ ] Se define/revisa la política de reutilización del token.
+
+---
+
+## 10. Ambiente de prueba
+
+Ambiente actual:
+
+```text
+https://testing.meettomatch.alphadocere.cl/
+```
+
+Página:
+
+```text
+editar-perfil.html
+```
+
+Formato:
+
+```text
+editar-perfil.html?token=TOKEN
+```
+
+---
+
+## 11. Próximo paso
+
+Una vez validado este flujo manual, el siguiente paso es conectar el mecanismo de correo:
+
+```text
+Solicitud de edición
+        ↓
+Generar token
+        ↓
+Guardar token / vigencia
+        ↓
+Construir URL
+        ↓
+Enviar correo
+        ↓
+Usuario hace clic
+        ↓
+editar-perfil.html?token=...
+        ↓
+Editar perfil
+```
+
+**Importante:** no mezclar esta etapa con la anterior de `GUID`. La implementación que actualmente funciona utiliza `token` como parámetro de la URL.

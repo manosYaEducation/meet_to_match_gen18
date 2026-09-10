@@ -185,6 +185,21 @@ function asegurarEsquema(PDO $conn, $nameDb)
         )
     ");
 
+    $conn->exec("
+        CREATE TABLE IF NOT EXISTS enlaces_edicion (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          usuario_id INT NOT NULL,
+          token CHAR(64) NOT NULL UNIQUE,
+          expira_en DATETIME NOT NULL,
+          usado_en DATETIME NULL DEFAULT NULL,
+          ip_solicitud VARCHAR(64) NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          INDEX idx_enlaces_token (token),
+          INDEX idx_enlaces_usuario (usuario_id),
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+        )
+    ");
+
     asegurarBloquesDemo($conn);
 }
 

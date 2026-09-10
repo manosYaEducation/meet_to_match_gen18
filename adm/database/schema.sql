@@ -100,3 +100,17 @@ ON DUPLICATE KEY UPDATE
   busca = VALUES(busca),
   descripcion = VALUES(descripcion),
   origen = IF(usuarios.origen = 'luma', usuarios.origen, VALUES(origen));
+
+-- Enlaces de edición de perfil por correo (guid temporal, un solo uso)
+CREATE TABLE IF NOT EXISTS enlaces_edicion (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  token CHAR(64) NOT NULL UNIQUE,
+  expira_en DATETIME NOT NULL,
+  usado_en DATETIME NULL DEFAULT NULL,
+  ip_solicitud VARCHAR(64) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_enlaces_token (token),
+  INDEX idx_enlaces_usuario (usuario_id),
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
