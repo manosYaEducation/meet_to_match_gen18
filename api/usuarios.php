@@ -28,7 +28,8 @@ try {
         tipo_usuario,
         intereses,
         busca,
-        descripcion
+        descripcion,
+        foto_perfil
     ";
 
     /*

@@ -1,7 +1,11 @@
-
 <?php
+
 require_once __DIR__ . '/../adm/api/db.php';
 require_once __DIR__ . '/../adm/api/mail.php';
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -29,11 +33,243 @@ function descripcionBloque($inicio, $fin)
 try {
 
     /*
-     * API pública:
+     * =========================================================
+     * ACEPTAR / RECHAZAR SOLICITUD
+     * =========================================================
+     *
+     * PUT /api/solicitudes.php
+     *
+     * {
+     *     "solicitud_id": 123,
+     *     "accion": "aceptar"
+     * }
+     *
+     * o
+     *
+     * {
+     *     "solicitud_id": 123,
+     *     "accion": "rechazar"
+     * }
+     *
+     * Solo el receptor de la solicitud puede decidir.
+     */
+    if ($method === 'PUT') {
+
+        if (empty($_SESSION['usuario_id'])) {
+            responder([
+                'exito' => false,
+                'mensaje' => 'Debes tener una sesion activa'
+            ], 401);
+        }
+
+        $usuarioId = (int)$_SESSION['usuario_id'];
+
+        $data = leerJson();
+
+        $solicitudId = enteroPositivo(
+            $data['solicitud_id'] ?? null
+        );
+
+        $accion = strtolower(
+            trim((string)($data['accion'] ?? ''))
+        );
+
+        if (!$solicitudId) {
+            responder([
+                'exito' => false,
+                'mensaje' => 'Falta la solicitud'
+            ], 400);
+        }
+
+        if (!in_array($accion, ['aceptar', 'rechazar'], true)) {
+            responder([
+                'exito' => false,
+                'mensaje' => 'Accion no valida'
+            ], 400);
+        }
+
+        /*
+         * Operacion critica.
+         */
+        $conn->beginTransaction();
+
+        /*
+         * Buscar y bloquear la solicitud.
+         *
+         * El receptor debe ser el usuario conectado.
+         */
+        $stmt = $conn->prepare("
+            SELECT
+                s.id,
+                s.solicitante_id,
+                s.receptor_id,
+                s.bloque_horario_id,
+                s.estado,
+                b.inicio,
+                b.fin,
+                b.activo
+            FROM solicitudes_reunion s
+            INNER JOIN bloques_horarios b
+                ON b.id = s.bloque_horario_id
+            WHERE s.id = ?
+              AND s.receptor_id = ?
+            FOR UPDATE
+        ");
+
+        $stmt->execute([
+            $solicitudId,
+            $usuarioId
+        ]);
+
+        $solicitud = $stmt->fetch();
+
+        if (!$solicitud) {
+
+            $conn->rollBack();
+
+            responder([
+                'exito' => false,
+                'mensaje' => 'Solicitud no encontrada'
+            ], 404);
+        }
+
+        /*
+         * Solo se puede decidir sobre solicitudes pendientes.
+         */
+        if ($solicitud['estado'] !== 'Pendiente') {
+
+            $conn->rollBack();
+
+            responder([
+                'exito' => false,
+                'mensaje' => 'Esta solicitud ya fue procesada'
+            ], 409);
+        }
+
+        /*
+         * El bloque debe seguir activo.
+         */
+        if (!(int)$solicitud['activo']) {
+
+            $conn->rollBack();
+
+            responder([
+                'exito' => false,
+                'mensaje' => 'El bloque horario ya no esta disponible'
+            ], 409);
+        }
+
+        /*
+         * =====================================================
+         * RECHAZAR
+         * =====================================================
+         *
+         * Al rechazar no existe ocupacion.
+         *
+         * El bloque queda disponible nuevamente,
+         * siempre que no exista otra reunion aceptada
+         * en ese mismo horario.
+         */
+        if ($accion === 'rechazar') {
+
+            $stmtUpdate = $conn->prepare("
+                UPDATE solicitudes_reunion
+                SET estado = 'Rechazada'
+                WHERE id = ?
+                  AND estado = 'Pendiente'
+            ");
+
+            $stmtUpdate->execute([
+                $solicitudId
+            ]);
+
+            $conn->commit();
+
+            responder([
+                'exito' => true,
+                'estado' => 'Rechazada',
+                'mensaje' => 'Solicitud rechazada correctamente'
+            ]);
+        }
+
+        /*
+         * =====================================================
+         * ACEPTAR
+         * =====================================================
+         *
+         * Antes de aceptar verificamos nuevamente
+         * que ninguno de los participantes tenga otra
+         * reunion aceptada en ese horario.
+         */
+        $stmtConflicto = $conn->prepare("
+            SELECT s.id
+            FROM solicitudes_reunion s
+            INNER JOIN bloques_horarios ocupado
+                ON ocupado.id = s.bloque_horario_id
+            WHERE s.estado = 'Aceptada'
+              AND ocupado.inicio < ?
+              AND ocupado.fin > ?
+              AND (
+                  s.solicitante_id IN (?, ?)
+                  OR s.receptor_id IN (?, ?)
+              )
+            LIMIT 1
+        ");
+
+        $stmtConflicto->execute([
+            $solicitud['fin'],
+            $solicitud['inicio'],
+            $solicitud['solicitante_id'],
+            $solicitud['receptor_id'],
+            $solicitud['solicitante_id'],
+            $solicitud['receptor_id']
+        ]);
+
+        if ($stmtConflicto->fetch()) {
+
+            $conn->rollBack();
+
+            responder([
+                'exito' => false,
+                'mensaje' => 'No se puede aceptar porque una de las personas ya tiene una reunion aceptada en este horario'
+            ], 409);
+        }
+
+        /*
+         * Aceptar solicitud.
+         */
+        $stmtUpdate = $conn->prepare("
+            UPDATE solicitudes_reunion
+            SET estado = 'Aceptada'
+            WHERE id = ?
+              AND estado = 'Pendiente'
+        ");
+
+        $stmtUpdate->execute([
+            $solicitudId
+        ]);
+
+        $conn->commit();
+
+        responder([
+            'exito' => true,
+            'estado' => 'Aceptada',
+            'mensaje' => 'Solicitud aceptada correctamente'
+        ]);
+    }
+
+
+    /*
+     * =========================================================
+     * CREAR SOLICITUD
+     * =========================================================
      *
      * POST /api/solicitudes.php
      *
-     * No se exponen GET, PUT, PATCH ni DELETE.
+     * Se permite solicitar:
+     *
+     * 1. Con sesión activa.
+     * 2. Sin sesión, pero con un correo registrado.
      */
     if ($method !== 'POST') {
         responder([
@@ -42,33 +278,79 @@ try {
         ], 405);
     }
 
+    /*
+     * Leer el body una sola vez.
+     */
     $data = leerJson();
 
     /*
-     * El correo es la única forma en que el visitante declara
-     * quién es.
+     * Identificar al solicitante.
      *
-     * IMPORTANTE:
-     * El frontend nunca envía solicitante_id.
+     * Si existe sesión, esa identidad tiene prioridad.
+     *
+     * Si no existe sesión, buscamos al participante
+     * mediante el correo enviado desde el frontend.
      */
-    $email = strtolower(trim((string)($data['email'] ?? '')));
-    $receptorId = enteroPositivo($data['receptor_id'] ?? null);
-    $bloqueId = enteroPositivo($data['bloque_horario_id'] ?? null);
-    $mensaje = trim((string)($data['mensaje'] ?? ''));
+    $solicitanteId = null;
+    $conectado = false;
+
+    if (!empty($_SESSION['usuario_id'])) {
+
+        $solicitanteId = (int)$_SESSION['usuario_id'];
+        $conectado = true;
+
+    } else {
+
+        $correo = strtolower(
+            trim((string)($data['email'] ?? ''))
+        );
+
+        if ($correo === '') {
+            responder([
+                'exito' => false,
+                'mensaje' => 'Se requiere un correo para solicitar una reunion'
+            ], 400);
+        }
+
+        $stmtUsuario = $conn->prepare("
+            SELECT id
+            FROM usuarios
+            WHERE correo = ?
+            LIMIT 1
+        ");
+
+        $stmtUsuario->execute([$correo]);
+
+        $usuario = $stmtUsuario->fetch();
+
+        if (!$usuario) {
+            responder([
+                'exito' => false,
+                'mensaje' => 'El correo no corresponde a un participante registrado'
+            ], 403);
+        }
+
+        $solicitanteId = (int)$usuario['id'];
+    }
+
+    /*
+     * Datos de la solicitud.
+     */
+    $receptorId = enteroPositivo(
+        $data['receptor_id'] ?? null
+    );
+
+    $bloqueId = enteroPositivo(
+        $data['bloque_horario_id'] ?? null
+    );
+
+    $mensaje = trim(
+        (string)($data['mensaje'] ?? '')
+    );
 
     /*
      * Validaciones básicas.
      */
-    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        /*
-         * No entregamos información sobre si el correo existe.
-         */
-        responder([
-            'exito' => true,
-            'mensaje' => 'Si los datos corresponden a un participante autorizado, tu solicitud será procesada.'
-        ]);
-    }
-
     if (!$receptorId || !$bloqueId) {
         responder([
             'exito' => false,
@@ -77,45 +359,12 @@ try {
     }
 
     /*
-     * Limitar el mensaje evita cargas innecesariamente grandes.
+     * Limitar el mensaje.
      */
     $mensaje = mb_substr($mensaje, 0, 2000);
 
     /*
-     * La respuesta pública para un correo no registrado debe ser
-     * indistinguible de una solicitud procesada.
-     *
-     * Primero resolvemos internamente el participante.
-     */
-    $stmtSolicitante = $conn->prepare("
-        SELECT id
-        FROM usuarios
-        WHERE correo = ?
-        LIMIT 1
-    ");
-
-    $stmtSolicitante->execute([$email]);
-    $solicitante = $stmtSolicitante->fetch();
-
-    if (!$solicitante) {
-        /*
-         * No revelar que el correo no está registrado.
-         *
-         * Tampoco se crea una solicitud ni se envía correo.
-         */
-        responder([
-            'exito' => true,
-            'mensaje' => 'Si los datos corresponden a un participante autorizado, tu solicitud será procesada.'
-        ]);
-    }
-
-    $solicitanteId = (int)$solicitante['id'];
-
-    /*
      * Evitar solicitar una reunión consigo mismo.
-     *
-     * Esto no revela información sensible porque el receptor_id
-     * pertenece al perfil público que el usuario ya está viendo.
      */
     if ($solicitanteId === $receptorId) {
         responder([
@@ -125,18 +374,14 @@ try {
     }
 
     /*
-     * Desde aquí comienza la operación crítica.
-     *
-     * La disponibilidad mostrada por horarios.php NO es una garantía.
-     * Volvemos a comprobar todo dentro de una transacción.
+     * =========================================================
+     * OPERACION CRITICA
+     * =========================================================
      */
     $conn->beginTransaction();
 
     /*
-     * Bloquear los usuarios involucrados mientras validamos la operación.
-     *
-     * Esto evita que otra operación concurrente modifique la información
-     * relevante mientras estamos procesando la solicitud.
+     * Bloquear los usuarios involucrados.
      */
     $stmtUsuarios = $conn->prepare("
         SELECT id
@@ -154,6 +399,7 @@ try {
     $usuarios = $stmtUsuarios->fetchAll();
 
     if (count($usuarios) !== 2) {
+
         $conn->rollBack();
 
         responder([
@@ -164,9 +410,6 @@ try {
 
     /*
      * El bloque debe existir y estar activo.
-     *
-     * FOR UPDATE evita que otro proceso modifique el bloque
-     * simultáneamente durante esta operación.
      */
     $stmtBloque = $conn->prepare("
         SELECT
@@ -182,11 +425,14 @@ try {
         FOR UPDATE
     ");
 
-    $stmtBloque->execute([$bloqueId]);
+    $stmtBloque->execute([
+        $bloqueId
+    ]);
 
     $bloque = $stmtBloque->fetch();
 
     if (!$bloque) {
+
         $conn->rollBack();
 
         responder([
@@ -196,14 +442,11 @@ try {
     }
 
     /*
-     * Verificar conflictos.
+     * =========================================================
+     * VERIFICAR CONFLICTOS
+     * =========================================================
      *
-     * Una reunión aceptada ocupa el horario si existe solapamiento:
-     *
-     * ocupado.inicio < bloque.fin
-     * AND ocupado.fin > bloque.inicio
-     *
-     * Se comprueba tanto para solicitante como para receptor.
+     * Se consideran solamente reuniones aceptadas.
      */
     $stmtConflicto = $conn->prepare("
         SELECT s.id
@@ -230,6 +473,7 @@ try {
     ]);
 
     if ($stmtConflicto->fetch()) {
+
         $conn->rollBack();
 
         responder([
@@ -239,7 +483,9 @@ try {
     }
 
     /*
-     * Evitar solicitudes pendientes duplicadas.
+     * =========================================================
+     * SOLICITUD PENDIENTE DUPLICADA
+     * =========================================================
      */
     $stmtCheck = $conn->prepare("
         SELECT id
@@ -258,6 +504,7 @@ try {
     ]);
 
     if ($stmtCheck->fetch()) {
+
         $conn->rollBack();
 
         responder([
@@ -267,16 +514,18 @@ try {
     }
 
     /*
-     * Crear la solicitud.
-     *
-     * El solicitante_id utilizado aquí fue obtenido por el backend
-     * a partir del correo. Nunca proviene del navegador.
+     * Crear descripción del horario.
      */
     $descripcionHorario = descripcionBloque(
         $bloque['inicio'],
         $bloque['fin']
     );
 
+    /*
+     * =========================================================
+     * CREAR SOLICITUD
+     * =========================================================
+     */
     $stmt = $conn->prepare("
         INSERT INTO solicitudes_reunion (
             solicitante_id,
@@ -300,23 +549,27 @@ try {
     $solicitudId = (int)$conn->lastInsertId();
 
     /*
-     * La solicitud ya está registrada en BD.
+     * Confirmar solicitud en BD.
      */
     $conn->commit();
 
     /*
-     * El envío de correo ocurre después del COMMIT.
+     * =========================================================
+     * ENVIAR CORREO
+     * =========================================================
      *
-     * Si el correo falla, no debemos deshacer la solicitud:
-     * la solicitud real pertenece a la BD.
+     * El correo se envía después del COMMIT para que un
+     * problema de correo no haga fallar la solicitud.
      */
     try {
-        enviarCorreoSolicitudReunion($conn, $solicitudId);
+
+        enviarCorreoSolicitudReunion(
+            $conn,
+            $solicitudId
+        );
+
     } catch (Throwable $mailError) {
-        /*
-         * Registrar el error en el servidor sin exponerlo
-         * al visitante.
-         */
+
         error_log(
             '[API PUBLICA solicitudes.php][MAIL] '
             . $mailError->getMessage()
@@ -324,20 +577,18 @@ try {
     }
 
     /*
-     * IMPORTANTE:
+     * =========================================================
+     * RESPUESTA
+     * =========================================================
      *
-     * No devolvemos:
-     * - solicitud_id
-     * - correo
-     * - resultado del envío
-     * - solicitante_id
-     *
-     * Así el endpoint no se convierte en una herramienta
-     * de enumeración o descubrimiento de información interna.
+     * conectado:
+     * true  = tenía sesión activa
+     * false = fue identificado mediante correo
      */
     responder([
         'exito' => true,
-        'mensaje' => 'Si los datos corresponden a un participante autorizado, tu solicitud será procesada.'
+        'conectado' => $conectado,
+        'mensaje' => 'Solicitud enviada correctamente'
     ]);
 
 } catch (Throwable $e) {
@@ -346,9 +597,6 @@ try {
         $conn->rollBack();
     }
 
-    /*
-     * El detalle técnico queda solamente en el servidor.
-     */
     error_log(
         '[API PUBLICA solicitudes.php] '
         . $e->getMessage()
@@ -359,4 +607,3 @@ try {
         'mensaje' => 'Error interno del servidor'
     ], 500);
 }
-

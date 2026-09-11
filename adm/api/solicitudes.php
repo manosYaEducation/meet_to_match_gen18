@@ -71,9 +71,23 @@ try {
         }
 
         $stmt = $conn->query("
-            SELECT s.*, b.inicio AS bloque_inicio, b.fin AS bloque_fin, b.etiqueta AS bloque_etiqueta
+            SELECT
+                s.*,
+                b.inicio AS bloque_inicio,
+                b.fin AS bloque_fin,
+                b.etiqueta AS bloque_etiqueta,
+                sol.nombre AS solicitante_nombre,
+                sol.apellido AS solicitante_apellido,
+                sol.empresa AS solicitante_empresa,
+                sol.cargo AS solicitante_cargo,
+                rec.nombre AS receptor_nombre,
+                rec.apellido AS receptor_apellido,
+                rec.empresa AS receptor_empresa,
+                rec.cargo AS receptor_cargo
             FROM solicitudes_reunion s
             LEFT JOIN bloques_horarios b ON b.id = s.bloque_horario_id
+            LEFT JOIN usuarios sol ON sol.id = s.solicitante_id
+            LEFT JOIN usuarios rec ON rec.id = s.receptor_id
             ORDER BY s.created_at DESC
         ");
         responder(['exito' => true, 'solicitudes' => $stmt->fetchAll()]);
@@ -137,20 +151,31 @@ try {
         }
 
         $descripcionHorario = descripcionBloque($bloque['inicio'], $bloque['fin']);
+
+        $estadoInicial = ($data['estado'] ?? '') === 'Aceptada' ? 'Aceptada' : 'Pendiente';
+
         $stmt = $conn->prepare("
             INSERT INTO solicitudes_reunion (solicitante_id, receptor_id, bloque_horario_id, mensaje, disponibilidad_sugerida, estado)
-            VALUES (?, ?, ?, ?, ?, 'Pendiente')
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $solicitanteId,
             $receptorId,
             $bloqueId,
             trim($data['mensaje'] ?? ''),
-            $descripcionHorario
+            $descripcionHorario,
+            $estadoInicial
         ]);
 
         $solicitudId = (int)$conn->lastInsertId();
         $conn->commit();
+
+        /*
+         * Si el admin la agenda directo como Aceptada, igual se
+         * intenta notificar por correo, pero un fallo de SMTP no
+         * debe impedir que la reunion quede creada (ya se hizo
+         * commit antes de esto).
+         */
         $correo = enviarCorreoSolicitudReunion($conn, $solicitudId);
 
         responder([

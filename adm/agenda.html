@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agenda y solicitudes - Panel admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css?v=20260901-1" rel="stylesheet">
+</head>
+<body>
+  <div id="app-navbar"></div>
+
+  <main class="container py-4">
+
+    <div class="mb-4">
+      <h1 class="h2 mb-1 text-white">Agenda y solicitudes (admin)</h1>
+      <p class="text-white opacity-75 mb-0">
+        Vista completa: todas las solicitudes y quién se junta con quién en cada horario.
+      </p>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body d-flex flex-wrap gap-3 align-items-end">
+        <div>
+          <label class="form-label mb-1">Agenda / evento</label>
+          <select id="selector-evento" class="form-select"></select>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-solicitudes" type="button">
+          Todas las solicitudes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-agenda" type="button">
+          Agenda por horario
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ============================================
+           TODAS LAS SOLICITUDES
+           ============================================ -->
+      <section class="tab-pane fade show active" id="tab-solicitudes">
+
+        <div class="card mb-3">
+          <div class="card-body d-flex flex-wrap gap-3 align-items-end">
+            <div>
+              <label class="form-label mb-1">Filtrar por estado</label>
+              <select id="filtro-estado-solicitud" class="form-select">
+                <option value="">Todos</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aceptada">Aceptada</option>
+                <option value="Rechazada">Rechazada</option>
+              </select>
+            </div>
+            <div class="small text-white opacity-75" id="contador-solicitudes"></div>
+          </div>
+        </div>
+
+        <div id="solicitudes-admin-mensaje"></div>
+        <div id="solicitudes-admin-lista" class="row g-3"></div>
+
+      </section>
+
+      <!-- ============================================
+           AGENDA POR HORARIO
+           ============================================ -->
+      <section class="tab-pane fade" id="tab-agenda">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div id="agenda-mensaje"></div>
+          <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#agendarModal">
+            + Agendar reunión
+          </button>
+        </div>
+
+        <div id="agenda-sin-horario-wrapper" class="mb-4 d-none">
+          <h2 class="h5 text-white mb-2">Aceptadas sin horario asignado</h2>
+          <p class="small text-white opacity-75 mb-2">
+            Reuniones aceptadas que no quedaron ligadas a ningún bloque horario (datos legados o de prueba).
+          </p>
+          <div id="agenda-sin-horario-lista" class="row g-3"></div>
+        </div>
+
+        <h2 class="h5 text-white mb-2">Salón B2B — bloques del evento</h2>
+        <div id="agenda-lista" class="row g-3"></div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- =========================================================
+       MODAL AGENDAR REUNIÓN (admin)
+       ========================================================= -->
+
+  <div class="modal fade" id="agendarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" data-theme="dark" style="background-color: var(--poc-panel-bg); color: var(--poc-text); border: 1px solid var(--poc-border);">
+        <form id="agendar-form">
+          <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
+            <h2 class="modal-title h5 text-white mb-0 fw-bold">Agendar reunión</h2>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body p-4">
+
+            <div class="mb-3">
+              <label class="form-label">Persona 1</label>
+              <select class="form-select" id="agendar-solicitante" required></select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Persona 2</label>
+              <select class="form-select" id="agendar-receptor" required></select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Bloque horario</label>
+              <select class="form-select" id="agendar-bloque" required></select>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label">Mensaje (opcional)</label>
+              <textarea class="form-control" id="agendar-mensaje" rows="2"></textarea>
+            </div>
+
+            <div id="agendar-mensaje-resultado" class="mt-2"></div>
+
+          </div>
+          <div class="modal-footer border-top border-secondary border-opacity-25">
+            <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">Agendar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js?v=20260721-1"></script>
+  <script src="js/agenda.js?v=20260910-1"></script>
+</body>
+</html>

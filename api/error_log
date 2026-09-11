@@ -1,0 +1,18 @@
+[10-Sep-2026 14:56:53 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[10-Sep-2026 14:56:53 America/Santiago] [DEBUG MAIL] Intentando enviar a: dev.manosya@gmail.com
+[10-Sep-2026 14:56:54 America/Santiago] [DEBUG MAIL] PHPMailer send() OK
+[10-Sep-2026 15:29:24 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[10-Sep-2026 15:29:24 America/Santiago] [DEBUG MAIL] Intentando enviar a: alphadocere@gmail.com
+[10-Sep-2026 15:29:25 America/Santiago] [DEBUG MAIL] PHPMailer send() OK
+[10-Sep-2026 15:39:01 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[10-Sep-2026 15:39:01 America/Santiago] [DEBUG MAIL] Intentando enviar a: alphadocere@gmail.com
+[10-Sep-2026 15:39:03 America/Santiago] [DEBUG MAIL] PHPMailer send() OK
+[10-Sep-2026 16:23:01 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[10-Sep-2026 16:23:01 America/Santiago] [DEBUG MAIL] Intentando enviar a: alphadocere@gmail.com
+[10-Sep-2026 16:23:02 America/Santiago] [DEBUG MAIL] PHPMailer send() OK
+[10-Sep-2026 16:31:44 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[10-Sep-2026 16:31:44 America/Santiago] [DEBUG MAIL] Intentando enviar a: alphadocere@gmail.com
+[10-Sep-2026 16:31:45 America/Santiago] [DEBUG MAIL] PHPMailer send() OK
+[11-Sep-2026 03:47:10 America/Santiago] [DEBUG MAIL] PHPMailer autoload OK
+[11-Sep-2026 03:47:10 America/Santiago] [DEBUG MAIL] Intentando enviar a: alphadocere@gmail.com
+[11-Sep-2026 03:47:11 America/Santiago] [DEBUG MAIL] PHPMailer send() OK

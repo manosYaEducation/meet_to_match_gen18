@@ -2,303 +2,549 @@
 
 <html lang="es">
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
   <title>Participantes - Meet to Match Gen18</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="adm/css/app.css?v=20260901-1" rel="stylesheet">
-  <link rel="manifest" href="adm/manifest.json">
-  <meta name="theme-color" content="#151515">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- CSS ORIGINAL -->
+  <link
+    href="adm/css/app.css?v=20260911-photo-2"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="manifest"
+    href="adm/manifest.json"
+  >
+
+  <meta
+    name="theme-color"
+    content="#151515"
+  >
+
 </head>
+
 
 <body>
 
   <div id="app-navbar"></div>
 
+
   <main class="hero min-vh-100">
+
     <div class="container py-4">
 
 
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-    <div>
-      <h1 class="h2 mb-1 text-white">Participantes y expositores</h1>
-      <p class="text-white opacity-75 mb-0">
-        Busca personas de interés y solicita reuniones privadas.
-      </p>
-    </div>
-
-    <a class="btn btn-primary" href="adm/solicitudes.html">
-      Ver mis solicitudes
-    </a>
-  </div>
-
-
-  <!-- Botón para expandir filtros en celulares -->
-  <div class="d-lg-none mb-3">
-
-    <button
-      class="btn btn-outline-light w-100 d-flex justify-content-between align-items-center py-2 px-3 filter-mobile-btn"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#panelFiltros"
-      aria-expanded="false"
-      aria-controls="panelFiltros"
-    >
-
-      <span class="d-flex align-items-center gap-2">
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
-        </svg>
-
-        <strong>Filtrar tu búsqueda</strong>
-
-      </span>
-
-      <span
-        class="badge bg-primary rounded-pill"
-        id="badge-total-filtros"
-      >
-        Ver filtros
-      </span>
-
-    </button>
-
-  </div>
-
-
-  <div class="row g-4">
-
-    <!-- Sidebar de filtros -->
-    <div class="col-lg-4 col-xl-3">
+      <!-- =====================================================
+           CABECERA
+           ===================================================== -->
 
       <div
-        class="collapse d-lg-block"
-        id="panelFiltros"
+        class="
+          d-flex
+          flex-column
+          flex-md-row
+          justify-content-between
+          align-items-start
+          align-items-md-center
+          gap-3
+          mb-4
+        "
       >
 
+        <div>
+
+          <h1 class="h2 mb-1 text-white">
+            Participantes y expositores
+          </h1>
+
+          <p class="text-white opacity-75 mb-0">
+            Busca personas de interés y solicita reuniones privadas.
+          </p>
+
+        </div>
+
+
+        <!-- =================================================
+             ESTADO DE SESIÓN
+             ================================================= -->
+
         <div
-          class="filter-sidebar card shadow-sm p-3 p-xl-4 sticky-lg-top"
-          style="top: 20px; z-index: 10;"
+          id="estado-sesion"
+          class="d-flex align-items-center gap-2"
         >
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
+          <!-- Usuario conectado -->
 
-            <h2 class="h5 mb-0 text-white fw-bold">
-              Filtrar tu búsqueda
-            </h2>
+          <div
+            id="usuario-conectado"
+            class="d-none align-items-center gap-2"
+          >
+
+            <span
+              class="small text-success fw-semibold"
+              id="usuario-conectado-nombre"
+            >
+              ● Conectado
+            </span>
+
+            <a
+              href="editar-perfil.html"
+              id="btn-mi-espacio"
+              class="btn btn-outline-light btn-sm"
+            >
+              Mi espacio
+            </a>
 
             <button
-              class="btn btn-sm btn-link text-decoration-none p-0 text-white opacity-75"
-              id="btn-limpiar-filtros"
               type="button"
-              title="Limpiar filtros"
-              style="font-size: 0.82rem;"
+              id="btn-cerrar-sesion-index"
+              class="
+                btn
+                btn-link
+                btn-sm
+                text-white
+                text-decoration-none
+                opacity-75
+              "
             >
-              Limpiar
+              Cerrar sesión
             </button>
 
           </div>
 
 
-          <!-- Búsqueda por palabra clave -->
-          <div class="mb-4">
+          <!-- Usuario no conectado -->
 
-            <label
-              class="form-label text-white small fw-semibold mb-2"
-              for="buscar"
+          <button
+            id="btn-ver-solicitudes"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#correoAccesoModal"
+          >
+            Ver mis solicitudes
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           BOTÓN FILTROS MOBILE
+           ===================================================== -->
+
+      <div class="d-lg-none mb-3">
+
+        <button
+          class="
+            btn
+            btn-outline-light
+            w-100
+            d-flex
+            justify-content-between
+            align-items-center
+            py-2
+            px-3
+            filter-mobile-btn
+          "
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#panelFiltros"
+          aria-expanded="false"
+          aria-controls="panelFiltros"
+        >
+
+          <span class="d-flex align-items-center gap-2">
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="currentColor"
+              viewBox="0 0 16 16"
             >
-              Búsqueda por palabra clave
-            </label>
+              <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+            </svg>
 
-            <div class="search-input-wrapper position-relative">
+            <strong>
+              Filtrar tu búsqueda
+            </strong>
 
-              <input
-                id="buscar"
-                class="form-control pe-5"
-                type="text"
-                placeholder="Buscar por palabra clave..."
-              >
+          </span>
 
-              <span
-                class="search-icon-inside position-absolute end-0 top-50 translate-middle-y me-3 text-white opacity-50"
-                style="pointer-events: none;"
-              >
+          <span
+            class="badge bg-primary rounded-pill"
+            id="badge-total-filtros"
+          >
+            Ver filtros
+          </span>
 
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 1 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 1-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
+        </button>
 
-              </span>
-
-            </div>
-
-          </div>
+      </div>
 
 
-          <!-- Categoría / Tipo de usuario -->
-          <div class="mb-4">
+      <!-- =====================================================
+           CONTENIDO
+           ===================================================== -->
 
-            <label class="form-label text-white small fw-semibold">
-              Categoría
-            </label>
+      <div class="row g-4">
+
+
+        <!-- =================================================
+             SIDEBAR FILTROS
+             ================================================= -->
+
+        <div class="col-lg-4 col-xl-3">
+
+          <div
+            class="collapse d-lg-block"
+            id="panelFiltros"
+          >
 
             <div
-              class="filter-radio-list d-flex flex-column gap-2"
-              id="filtro-tipo-grupo"
+              class="
+                filter-sidebar
+                card
+                shadow-sm
+                p-3
+                p-xl-4
+                sticky-lg-top
+              "
+              style="top: 20px; z-index: 10;"
             >
 
-              <label
-                class="filter-radio-item active"
-                data-tipo=""
+
+              <div
+                class="
+                  d-flex
+                  justify-content-between
+                  align-items-center
+                  mb-3
+                "
               >
 
-                <input
-                  type="radio"
-                  name="tipo_filter"
-                  value=""
-                  checked
-                  class="d-none"
+                <h2
+                  class="h5 mb-0 text-white fw-bold"
+                >
+                  Filtrar tu búsqueda
+                </h2>
+
+                <button
+                  class="
+                    btn
+                    btn-sm
+                    btn-link
+                    text-decoration-none
+                    p-0
+                    text-white
+                    opacity-75
+                  "
+                  id="btn-limpiar-filtros"
+                  type="button"
+                  title="Limpiar filtros"
+                  style="font-size: 0.82rem;"
+                >
+                  Limpiar
+                </button>
+
+              </div>
+
+
+              <!-- =================================================
+                   BÚSQUEDA
+                   ================================================= -->
+
+              <div class="mb-4">
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    fw-semibold
+                    mb-2
+                  "
+                  for="buscar"
+                >
+                  Búsqueda por palabra clave
+                </label>
+
+                <div
+                  class="
+                    search-input-wrapper
+                    position-relative
+                  "
                 >
 
-                <span class="filter-dot"></span>
+                  <input
+                    id="buscar"
+                    class="form-control pe-5"
+                    type="text"
+                    placeholder="Buscar por palabra clave..."
+                  >
 
-                <span class="filter-name">
-                  Todos
-                </span>
+                  <span
+                    class="
+                      search-icon-inside
+                      position-absolute
+                      end-0
+                      top-50
+                      translate-middle-y
+                      me-3
+                      text-white
+                      opacity-50
+                    "
+                    style="pointer-events: none;"
+                  >
 
-                <span
-                  class="badge rounded-pill bg-dark ms-auto"
-                  id="count-todos"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 1 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 1-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- =================================================
+                   CATEGORÍA
+                   ================================================= -->
+
+              <div class="mb-4">
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    fw-semibold
+                  "
                 >
-                  0
-                </span>
+                  Categoría
+                </label>
 
-              </label>
-
-
-              <label
-                class="filter-radio-item"
-                data-tipo="Expositor"
-              >
-
-                <input
-                  type="radio"
-                  name="tipo_filter"
-                  value="Expositor"
-                  class="d-none"
-                >
-
-                <span class="filter-dot"></span>
-
-                <span class="filter-name">
-                  Expositores
-                </span>
-
-                <span
-                  class="badge rounded-pill bg-dark ms-auto"
-                  id="count-expositor"
-                >
-                  0
-                </span>
-
-              </label>
-
-
-              <label
-                class="filter-radio-item"
-                data-tipo="Asistente"
-              >
-
-                <input
-                  type="radio"
-                  name="tipo_filter"
-                  value="Asistente"
-                  class="d-none"
-                >
-
-                <span class="filter-dot"></span>
-
-                <span class="filter-name">
-                  Asistentes
-                </span>
-
-                <span
-                  class="badge rounded-pill bg-dark ms-auto"
-                  id="count-asistente"
-                >
-                  0
-                </span>
-
-              </label>
-
-
-              <label
-                class="filter-radio-item"
-                data-tipo="Organizador"
-              >
-
-                <input
-                  type="radio"
-                  name="tipo_filter"
-                  value="Organizador"
-                  class="d-none"
+                <div
+                  class="
+                    filter-radio-list
+                    d-flex
+                    flex-column
+                    gap-2
+                  "
+                  id="filtro-tipo-grupo"
                 >
 
-                <span class="filter-dot"></span>
+                  <label
+                    class="filter-radio-item active"
+                    data-tipo=""
+                  >
 
-                <span class="filter-name">
-                  Organizadores
-                </span>
+                    <input
+                      type="radio"
+                      name="tipo_filter"
+                      value=""
+                      checked
+                      class="d-none"
+                    >
 
-                <span
-                  class="badge rounded-pill bg-dark ms-auto"
-                  id="count-organizador"
+                    <span class="filter-dot"></span>
+
+                    <span class="filter-name">
+                      Todos
+                    </span>
+
+                    <span
+                      class="badge rounded-pill bg-dark ms-auto"
+                      id="count-todos"
+                    >
+                      0
+                    </span>
+
+                  </label>
+
+
+                  <label
+                    class="filter-radio-item"
+                    data-tipo="Expositor"
+                  >
+
+                    <input
+                      type="radio"
+                      name="tipo_filter"
+                      value="Expositor"
+                      class="d-none"
+                    >
+
+                    <span class="filter-dot"></span>
+
+                    <span class="filter-name">
+                      Expositores
+                    </span>
+
+                    <span
+                      class="badge rounded-pill bg-dark ms-auto"
+                      id="count-expositor"
+                    >
+                      0
+                    </span>
+
+                  </label>
+
+
+                  <label
+                    class="filter-radio-item"
+                    data-tipo="Asistente"
+                  >
+
+                    <input
+                      type="radio"
+                      name="tipo_filter"
+                      value="Asistente"
+                      class="d-none"
+                    >
+
+                    <span class="filter-dot"></span>
+
+                    <span class="filter-name">
+                      Asistentes
+                    </span>
+
+                    <span
+                      class="badge rounded-pill bg-dark ms-auto"
+                      id="count-asistente"
+                    >
+                      0
+                    </span>
+
+                  </label>
+
+
+                  <label
+                    class="filter-radio-item"
+                    data-tipo="Organizador"
+                  >
+
+                    <input
+                      type="radio"
+                      name="tipo_filter"
+                      value="Organizador"
+                      class="d-none"
+                    >
+
+                    <span class="filter-dot"></span>
+
+                    <span class="filter-name">
+                      Organizadores
+                    </span>
+
+                    <span
+                      class="badge rounded-pill bg-dark ms-auto"
+                      id="count-organizador"
+                    >
+                      0
+                    </span>
+
+                  </label>
+
+                </div>
+
+              </div>
+
+
+              <!-- =================================================
+                   CARGO
+                   ================================================= -->
+
+              <div class="mb-2">
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    fw-semibold
+                    mb-2
+                  "
+                  for="filtro-cargo"
                 >
-                  0
-                </span>
+                  Cargo o especialidad
+                </label>
 
-              </label>
+                <select
+                  id="filtro-cargo"
+                  class="form-select"
+                >
+
+                  <option value="">
+                    Todos los cargos
+                  </option>
+
+                </select>
+
+              </div>
 
             </div>
 
           </div>
 
+        </div>
 
-          <!-- Filtro por cargo -->
-          <div class="mb-2">
 
-            <label
-              class="form-label text-white small fw-semibold mb-2"
-              for="filtro-cargo"
+        <!-- =================================================
+             PARTICIPANTES
+             ================================================= -->
+
+        <div class="col-lg-8 col-xl-9">
+
+          <div
+            class="
+              d-flex
+              justify-content-between
+              align-items-center
+              mb-3
+            "
+          >
+
+            <span
+              class="small text-white opacity-75"
+              id="contador-participantes"
             >
-              Cargo o especialidad
-            </label>
-
-            <select
-              id="filtro-cargo"
-              class="form-select"
-            >
-
-              <option value="">
-                Todos los cargos
-              </option>
-
-            </select>
+              Cargando participantes...
+            </span>
 
           </div>
+
+
+          <div
+            id="participantes-mensaje"
+          ></div>
+
+
+          <div
+            id="participantes-grid"
+            class="row g-3 g-xl-4"
+          ></div>
 
         </div>
 
@@ -306,36 +552,8 @@
 
     </div>
 
-
-    <!-- Contenido de participantes -->
-    <div class="col-lg-8 col-xl-9">
-
-      <div class="d-flex justify-content-between align-items-center mb-3">
-
-        <span
-          class="small text-white opacity-75"
-          id="contador-participantes"
-        >
-          Cargando participantes...
-        </span>
-
-      </div>
-
-      <div id="participantes-mensaje"></div>
-
-      <div
-        id="participantes-grid"
-        class="row g-3 g-xl-4"
-      ></div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
   </main>
+
 
   <!-- =========================================================
        MODAL PERFIL
@@ -348,65 +566,73 @@
     aria-hidden="true"
   >
 
-
-<div class="modal-dialog modal-lg modal-dialog-scrollable">
-
-  <div
-    class="modal-content"
-    data-theme="dark"
-    style="background-color: var(--poc-panel-bg); color: var(--poc-text);"
-  >
-
-    <div class="modal-header">
-
-      <h2
-        class="modal-title h5"
-        id="perfilTitulo"
-      >
-        Perfil
-      </h2>
-
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="modal"
-      ></button>
-
-    </div>
-
-
     <div
-      class="modal-body"
-      id="perfilContenido"
-    ></div>
+      class="
+        modal-dialog
+        modal-lg
+        modal-dialog-scrollable
+      "
+    >
 
-
-    <div class="modal-footer">
-
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        data-bs-dismiss="modal"
+      <div
+        class="modal-content"
+        data-theme="dark"
+        style="
+          background-color: var(--poc-panel-bg);
+          color: var(--poc-text);
+        "
       >
-        Cerrar
-      </button>
 
-      <button
-        type="button"
-        class="btn btn-primary"
-        id="btnAbrirSolicitud"
-      >
-        Solicitar reunión
-      </button>
+        <div class="modal-header">
+
+          <h2
+            class="modal-title h5"
+            id="perfilTitulo"
+          >
+            Perfil
+          </h2>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+
+        </div>
+
+
+        <div
+          class="modal-body"
+          id="perfilContenido"
+        ></div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="btnAbrirSolicitud"
+          >
+            Solicitar reunión
+          </button>
+
+        </div>
+
+      </div>
 
     </div>
 
   </div>
 
-</div>
-
-
-  </div>
 
   <!-- =========================================================
        MODAL SOLICITUD
@@ -419,269 +645,835 @@
     aria-hidden="true"
   >
 
-
-<div class="modal-dialog modal-dialog-centered modal-lg">
-
-  <div
-    class="modal-content"
-    data-theme="dark"
-    style="
-      background-color: var(--poc-panel-bg);
-      color: var(--poc-text);
-      border: 1px solid var(--poc-border);
-    "
-  >
-
-    <form id="solicitud-form">
+    <div
+      class="
+        modal-dialog
+        modal-dialog-centered
+        modal-lg
+      "
+    >
 
       <div
-        class="modal-header border-bottom border-secondary border-opacity-25 pb-3"
+        class="modal-content"
+        data-theme="dark"
+        style="
+          background-color: var(--poc-panel-bg);
+          color: var(--poc-text);
+          border: 1px solid var(--poc-border);
+        "
       >
 
-        <h2 class="modal-title h5 text-white mb-0 fw-bold">
-          Solicitar reunión
-        </h2>
-
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-          aria-label="Cerrar"
-        ></button>
-
-      </div>
+        <form id="solicitud-form">
 
 
-      <div class="modal-body p-4">
+          <!-- =================================================
+               HEADER
+               ================================================= -->
 
-        <!-- IDs internos -->
-        <input
-          type="hidden"
-          name="receptor_id"
-          id="receptor_id"
-        >
+          <div
+            class="
+              modal-header
+              border-bottom
+              border-secondary
+              border-opacity-25
+              pb-3
+            "
+          >
 
-        <input
-          type="hidden"
-          name="bloque_horario_id"
-          id="bloque_horario_id"
-          required
-        >
+            <div>
+
+              <h2
+                class="
+                  modal-title
+                  h5
+                  text-white
+                  mb-0
+                  fw-bold
+                "
+              >
+                Solicitar reunión
+              </h2>
+
+              <div
+                id="solicitudDestino"
+                class="small text-white opacity-75 mt-1"
+              ></div>
+
+            </div>
 
 
-        <!-- Resumen del participante receptor -->
-        <div
-          id="solicitudDestino"
-          class="modal-participant-preview p-3 mb-3 rounded"
-        ></div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
 
-
-        <!-- =================================================
-             DATOS DEL SOLICITANTE
-             ================================================= -->
-
-        <div class="mb-4">
-
-          <div class="small text-white opacity-75 mb-2">
-            Para enviar la solicitud necesitamos identificarte
-            como participante.
           </div>
 
-          <div class="row g-3">
 
-            <!-- Correo -->
-            <div class="col-12 col-md-7">
+          <!-- =================================================
+               BODY
+               ================================================= -->
 
-              <label
-                class="form-label text-white small fw-bold mb-1"
-                for="solicitante_email"
+          <div class="modal-body p-4">
+
+
+            <!-- IDs internos -->
+
+            <input
+              type="hidden"
+              name="receptor_id"
+              id="receptor_id"
+            >
+
+            <input
+              type="hidden"
+              name="bloque_horario_id"
+              id="bloque_horario_id"
+            >
+
+
+            <!-- =================================================
+                 DATOS DEL SOLICITANTE
+                 ================================================= -->
+
+            <!-- Usuario con sesión -->
+
+            <div
+              id="solicitante-identidad-sesion"
+              class="
+                mb-4
+                p-3
+                rounded
+                border
+                border-success
+                border-opacity-25
+                bg-success
+                bg-opacity-10
+              "
+              style="display: none;"
+            >
+
+              <div class="small text-white opacity-75 mb-1">
+                Solicitante
+              </div>
+
+              <div
+                id="solicitante-sesion-nombre"
+                class="fw-semibold text-white"
               >
-                Tu correo electrónico *
-              </label>
+                Sesión activa
+              </div>
 
-              <input
-                type="email"
-                id="solicitante_email"
-                name="email"
-                class="form-control"
-                placeholder="tu@correo.cl"
-                autocomplete="email"
-                maxlength="190"
-                required
-              >
-
-              <div class="form-text text-white opacity-50">
-                Debe corresponder al correo con el que te registraste
-                en el evento.
+              <div class="small text-white opacity-50 mt-1">
+                Tu identidad se obtiene automáticamente desde tu sesión.
               </div>
 
             </div>
 
 
-            <!-- Nombre opcional -->
-            <div class="col-12 col-md-5">
+            <!-- Usuario sin sesión -->
+
+            <div
+              id="solicitante-identidad-correo"
+              class="mb-4"
+            >
+
+              <div class="small text-white opacity-75 mb-2">
+
+                Para enviar la solicitud necesitamos identificarte
+                como participante.
+
+              </div>
+
+
+              <div class="row g-3">
+
+
+                <!-- CORREO -->
+
+                <div class="col-12 col-md-7">
+
+                  <label
+                    class="
+                      form-label
+                      text-white
+                      small
+                      fw-bold
+                      mb-1
+                    "
+                    for="solicitante_email"
+                  >
+                    Tu correo electrónico *
+                  </label>
+
+                  <input
+                    type="email"
+                    id="solicitante_email"
+                    name="email"
+                    class="form-control"
+                    placeholder="tu@correo.cl"
+                    autocomplete="email"
+                    maxlength="190"
+                    required
+                  >
+
+                  <div class="form-text text-white opacity-50">
+
+                    Debe corresponder al correo con el que
+                    te registraste en el evento.
+
+                  </div>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+
+                <div class="col-12 col-md-5">
+
+                  <label
+                    class="
+                      form-label
+                      text-white
+                      small
+                      fw-bold
+                      mb-1
+                    "
+                    for="solicitante_nombre"
+                  >
+
+                    Tu nombre
+
+                    <span class="fw-normal opacity-50">
+                      (opcional)
+                    </span>
+
+                  </label>
+
+                  <input
+                    type="text"
+                    id="solicitante_nombre"
+                    name="nombre"
+                    class="form-control"
+                    placeholder="¿Cómo te llamamos?"
+                    autocomplete="name"
+                    maxlength="120"
+                  >
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 HORARIOS
+                 ================================================= -->
+
+            <div class="mb-3">
+
+              <div
+                class="
+                  d-flex
+                  justify-content-between
+                  align-items-center
+                  mb-2
+                "
+              >
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    fw-bold
+                    mb-0
+                  "
+                >
+                  Selecciona un horario disponible
+                </label>
+
+                <span
+                  class="
+                    small
+                    text-white
+                    opacity-75
+                  "
+                  id="horarios-ayuda"
+                >
+                  Cargando horarios...
+                </span>
+
+              </div>
+
+
+              <div
+                id="horarios-slots-container"
+                class="
+                  slots-scroll-area
+                  p-2
+                  rounded
+                "
+              >
+
+                <div
+                  class="
+                    text-center
+                    py-4
+                    text-white
+                    opacity-75
+                    small
+                  "
+                >
+                  Cargando horarios libres...
+                </div>
+
+              </div>
+
+
+              <!-- HORARIO SELECCIONADO -->
+
+              <div
+                id="horario-seleccionado-container"
+                class="mt-2"
+                style="display: none;"
+              >
+
+                <div
+                  class="
+                    selected-slot-pill
+                    py-2
+                    px-3
+                    rounded
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                  "
+                >
+
+                  <span
+                    class="
+                      small
+                      text-white
+                      opacity-75
+                    "
+                  >
+                    Horario elegido:
+                  </span>
+
+                  <span
+                    class="
+                      fw-bold
+                      text-white
+                      small
+                    "
+                    id="horario-seleccionado-texto"
+                  ></span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 HUB / UBICACIÓN
+                 ================================================= -->
+
+            <div class="mb-4">
+
+              <div
+                class="
+                  d-flex
+                  justify-content-between
+                  align-items-center
+                  mb-2
+                "
+              >
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    fw-bold
+                    mb-0
+                  "
+                >
+                  Punto de encuentro
+                </label>
+
+                <span
+                  class="
+                    small
+                    text-white
+                    opacity-50
+                  "
+                >
+                  Hub Providencia
+                </span>
+
+              </div>
+
+
+              <!-- PISO -->
+
+              <div class="mb-3">
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    mb-1
+                  "
+                  for="hub-floor-select"
+                >
+                  Piso
+                </label>
+
+                <select
+                  id="hub-floor-select"
+                  class="form-select"
+                >
+
+                  <option value="">
+                    Selecciona un piso
+                  </option>
+
+                  <option value="subterraneo">
+                    Planta Subterráneo
+                  </option>
+
+                  <option value="piso1">
+                    Planta Primer Piso
+                  </option>
+
+                  <option value="piso2">
+                    Planta Segundo Piso
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- MAPA -->
+
+              <div
+                id="hub-map-container"
+                class="mb-3"
+                style="display: none;"
+              >
+
+                <div
+                  class="
+                    rounded
+                    border
+                    border-secondary
+                    border-opacity-25
+                    overflow-hidden
+                  "
+                >
+
+                  <div
+                    id="hub-floor-name"
+                    class="
+                      p-2
+                      small
+                      text-white
+                      opacity-75
+                      border-bottom
+                      border-secondary
+                      border-opacity-25
+                    "
+                  >
+                    Mapa
+                  </div>
+
+
+                  <!-- PLACEHOLDER -->
+                  <div
+                    id="hub-map-placeholder"
+                    class="
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                      text-center
+                      p-4
+                    "
+                    style="min-height: 180px;"
+                  >
+
+                    <div
+                      class="
+                        text-white
+                        opacity-50
+                      "
+                    >
+
+                      <div class="fs-1 mb-2">
+                        🗺️
+                      </div>
+
+                      <div class="small">
+                        Mapa del piso
+                      </div>
+
+                      <div class="small opacity-50">
+                        Imagen pendiente
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- ZONA -->
+
+              <div
+                id="hub-zone-container"
+                style="display: none;"
+              >
+
+                <label
+                  class="
+                    form-label
+                    text-white
+                    small
+                    mb-1
+                  "
+                  for="hub-zone-select"
+                >
+                  Zona de encuentro
+                </label>
+
+                <select
+                  id="hub-zone-select"
+                  class="form-select"
+                  disabled
+                >
+
+                  <option value="">
+                    Selecciona una zona
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- UBICACIÓN ELEGIDA -->
+
+              <div
+                id="hub-location-selected"
+                class="
+                  mt-3
+                  p-3
+                  rounded
+                  border
+                  border-primary
+                  border-opacity-25
+                  bg-primary
+                  bg-opacity-10
+                "
+                style="display: none;"
+              >
+
+                <div
+                  class="
+                    small
+                    text-white
+                    opacity-75
+                    mb-1
+                  "
+                >
+                  Ubicación seleccionada
+                </div>
+
+                <div
+                  id="hub-location-selected-text"
+                  class="
+                    small
+                    text-white
+                    fw-semibold
+                  "
+                ></div>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MENSAJE
+                 ================================================= -->
+
+            <div class="mb-2">
 
               <label
-                class="form-label text-white small fw-bold mb-1"
-                for="solicitante_nombre"
+                class="
+                  form-label
+                  text-white
+                  small
+                  fw-bold
+                  mb-1
+                "
+                for="solicitud-mensaje-input"
               >
-                Tu nombre
+
+                Mensaje o motivo
+
                 <span class="fw-normal opacity-50">
                   (opcional)
                 </span>
+
               </label>
 
-              <input
-                type="text"
-                id="solicitante_nombre"
-                name="nombre"
+              <textarea
+                id="solicitud-mensaje-input"
                 class="form-control"
-                placeholder="¿Cómo te llamamos?"
-                autocomplete="name"
-                maxlength="120"
-              >
+                name="mensaje"
+                rows="3"
+                maxlength="1000"
+                placeholder="Hola, me gustaría reunirme contigo para conversar sobre..."
+              ></textarea>
 
             </div>
 
-          </div>
 
-        </div>
-
-
-        <!-- =================================================
-             SELECTOR DE HORARIOS
-             ================================================= -->
-
-        <div class="mb-3">
-
-          <div class="d-flex justify-content-between align-items-center mb-2">
-
-            <label class="form-label text-white small fw-bold mb-0">
-              Selecciona un horario disponible
-            </label>
-
-            <span
-              class="small text-white opacity-75"
-              id="horarios-ayuda"
-            >
-              Cargando horarios...
-            </span>
-
-          </div>
-
-
-          <div
-            id="horarios-slots-container"
-            class="slots-scroll-area p-2 rounded"
-          >
-
-            <div class="text-center py-4 text-white opacity-75 small">
-              Cargando horarios libres...
-            </div>
-
-          </div>
-
-
-          <!-- Indicador de horario seleccionado -->
-          <div
-            id="horario-seleccionado-container"
-            class="mt-2"
-            style="display: none;"
-          >
+            <!-- RESULTADO -->
 
             <div
-              class="selected-slot-pill py-2 px-3 rounded d-flex justify-content-between align-items-center"
-            >
-
-              <span class="small text-white opacity-75">
-                Horario elegido:
-              </span>
-
-              <span
-                class="fw-bold text-white small"
-                id="horario-seleccionado-texto"
-              ></span>
-
-            </div>
+              id="solicitud-mensaje"
+              class="mt-3"
+            ></div>
 
           </div>
 
-        </div>
 
+          <!-- =================================================
+               FOOTER
+               ================================================= -->
 
-        <!-- =================================================
-             MENSAJE
-             ================================================= -->
-
-        <div class="mb-2">
-
-          <label
-            class="form-label text-white small fw-bold mb-1"
-            for="solicitud-mensaje-input"
+          <div
+            class="
+              modal-footer
+              border-top
+              border-secondary
+              border-opacity-25
+            "
           >
-            Mensaje o motivo
-            <span class="fw-normal opacity-50">
-              (opcional)
-            </span>
-          </label>
 
-          <textarea
-            id="solicitud-mensaje-input"
-            class="form-control"
-            name="mensaje"
-            rows="3"
-            maxlength="1000"
-            placeholder="Hola, me gustaría reunirme contigo para conversar sobre..."
-          ></textarea>
+            <button
+              type="button"
+              class="
+                btn
+                btn-outline-secondary
+                px-3
+              "
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
 
-        </div>
+            <button
+              type="submit"
+              class="
+                btn
+                btn-primary
+                rounded-pill
+                px-4
+                fw-bold
+              "
+              id="btnEnviarSolicitud"
+              disabled
+            >
+              Enviar solicitud
+            </button>
 
+          </div>
 
-        <!-- Resultado de la solicitud -->
-        <div
-          id="solicitud-mensaje"
-          class="mt-3"
-        ></div>
+        </form>
 
       </div>
 
+    </div>
 
-      <!-- Footer -->
+  </div>
+
+
+  <!-- =========================================================
+       MODAL CORREO DE ACCESO
+       ========================================================= -->
+
+  <div
+    class="modal fade"
+    id="correoAccesoModal"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+
+    <div
+      class="
+        modal-dialog
+        modal-dialog-centered
+      "
+    >
+
       <div
-        class="modal-footer border-top border-secondary border-opacity-25"
+        class="modal-content"
+        data-theme="dark"
+        style="
+          background-color: var(--poc-panel-bg);
+          color: var(--poc-text);
+          border: 1px solid var(--poc-border);
+        "
       >
 
-        <button
-          type="button"
-          class="btn btn-outline-secondary px-3"
-          data-bs-dismiss="modal"
-        >
-          Cancelar
-        </button>
+        <form id="correo-acceso-form">
 
-        <button
-          type="submit"
-          class="btn btn-primary rounded-pill px-4 fw-bold"
-          id="btnEnviarSolicitud"
-          disabled
-        >
-          Enviar solicitud
-        </button>
+
+          <div
+            class="
+              modal-header
+              border-bottom
+              border-secondary
+              border-opacity-25
+              pb-3
+            "
+          >
+
+            <h2
+              class="
+                modal-title
+                h5
+                text-white
+                mb-0
+                fw-bold
+              "
+            >
+              Ver mis solicitudes
+            </h2>
+
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+
+          </div>
+
+
+          <div class="modal-body p-4">
+
+            <label
+              class="
+                form-label
+                text-white
+                small
+                fw-bold
+                mb-1
+              "
+              for="correo-acceso-input"
+            >
+              Tu correo electrónico *
+            </label>
+
+            <input
+              type="email"
+              id="correo-acceso-input"
+              name="correo"
+              class="form-control"
+              placeholder="tu@correo.cl"
+              autocomplete="email"
+              maxlength="190"
+              required
+            >
+
+            <div
+              class="
+                form-text
+                text-white
+                opacity-50
+              "
+            >
+              Debe corresponder al correo con el que te
+              registraste en el evento.
+            </div>
+
+
+            <div
+              id="correo-acceso-mensaje"
+              class="mt-3"
+            ></div>
+
+          </div>
+
+
+          <div
+            class="
+              modal-footer
+              border-top
+              border-secondary
+              border-opacity-25
+            "
+          >
+
+            <button
+              type="button"
+              class="
+                btn
+                btn-outline-secondary
+                px-3
+              "
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="
+                btn
+                btn-primary
+                rounded-pill
+                px-4
+                fw-bold
+              "
+              id="btn-solicitar-acceso"
+            >
+              Continuar
+            </button>
+
+          </div>
+
+        </form>
 
       </div>
 
-    </form>
+    </div>
 
   </div>
 
-</div>
 
-
-  </div>
+  <!-- =========================================================
+       COMPONENTES GLOBALES
+       ========================================================= -->
 
   <div id="app-footer"></div>
 
   <div id="qr-modals-container"></div>
+
 
   <!-- =========================================================
        SCRIPTS
@@ -704,9 +1496,8 @@
     src="js/app.js?v=20260721-1"
   ></script>
 
-  <script
-    src="js/index.js?v=20260901-1"
-  ></script>
+  <script src="js/index.js?v=20260911-photo-2"></script>
 
 </body>
+
 </html>
