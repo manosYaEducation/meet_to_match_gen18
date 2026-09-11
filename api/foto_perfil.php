@@ -69,34 +69,60 @@ try {
         ], 400);
     }
 
-    if ((int)$archivo['size'] <= 0 || (int)$archivo['size'] > 5 * 1024 * 1024) {
+    if (
+        (int)$archivo['size'] <= 0 ||
+        (int)$archivo['size'] > 5 * 1024 * 1024
+    ) {
         responder([
             'exito' => false,
             'mensaje' => 'La imagen debe pesar como máximo 5 MB'
         ], 400);
     }
 
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->file($archivo['tmp_name']);
+    /*
+     * Validar que sea una imagen real sin depender de finfo,
+     * ya que Fileinfo no está habilitado en el servidor.
+     */
+    $infoImagen = @getimagesize($archivo['tmp_name']);
+
+    if ($infoImagen === false) {
+        responder([
+            'exito' => false,
+            'mensaje' => 'El archivo seleccionado no es una imagen válida'
+        ], 400);
+    }
+
+    $tipoImagen = $infoImagen[2];
 
     $tiposPermitidos = [
-        'image/jpeg' => 'jpg',
-        'image/png'  => 'png',
-        'image/webp' => 'webp'
+        IMAGETYPE_JPEG => 'jpg',
+        IMAGETYPE_PNG  => 'png',
+        IMAGETYPE_WEBP => 'webp'
     ];
 
-    if (!isset($tiposPermitidos[$mime])) {
+    if (!isset($tiposPermitidos[$tipoImagen])) {
         responder([
             'exito' => false,
             'mensaje' => 'Solo se permiten imágenes JPG, PNG o WEBP'
         ], 400);
     }
 
-    $extension = $tiposPermitidos[$mime];
+    $extension = $tiposPermitidos[$tipoImagen];
+
     $directorio = __DIR__ . '/../uploads/perfiles/';
 
-    if (!is_dir($directorio) && !mkdir($directorio, 0755, true)) {
-        throw new RuntimeException('No fue posible crear la carpeta de perfiles');
+    if (!is_dir($directorio)) {
+        if (!mkdir($directorio, 0755, true)) {
+            throw new RuntimeException(
+                'No fue posible crear la carpeta de perfiles'
+            );
+        }
+    }
+
+    if (!is_writable($directorio)) {
+        throw new RuntimeException(
+            'La carpeta de perfiles no tiene permisos de escritura'
+        );
     }
 
     $nombreArchivo =
@@ -111,7 +137,9 @@ try {
     $rutaPublica = 'uploads/perfiles/' . $nombreArchivo;
 
     if (!move_uploaded_file($archivo['tmp_name'], $rutaNueva)) {
-        throw new RuntimeException('No fue posible guardar la imagen');
+        throw new RuntimeException(
+            'No fue posible guardar la imagen en el servidor'
+        );
     }
 
     $stmt = $conn->prepare("
@@ -125,7 +153,10 @@ try {
         $usuarioId
     ]);
 
-    // Solo después de guardar la nueva ruta en BD, borrar la foto anterior.
+    /*
+     * Solo borrar la foto anterior después de haber
+     * guardado correctamente la nueva ruta en la BD.
+     */
     $fotoAnterior = trim((string)($usuario['foto_perfil'] ?? ''));
 
     if (
@@ -146,16 +177,19 @@ try {
     ]);
 
 } catch (Throwable $e) {
-    // Si algo falla después de mover el archivo pero antes de completar,
-    // evitar dejar archivos huérfanos.
-    if ($rutaNueva && is_file($rutaNueva)) {
+
+    /*
+     * Si la imagen llegó a guardarse pero luego falló
+     * la actualización de la BD, eliminarla.
+     */
+    if ($rutaNueva !== null && is_file($rutaNueva)) {
         @unlink($rutaNueva);
     }
 
-    error_log('[FOTO PERFIL] ' . $e->getMessage());
+    http_response_code(500);
 
-    responder([
+    echo json_encode([
         'exito' => false,
         'mensaje' => 'No fue posible subir la imagen'
-    ], 500);
+    ]);
 }
