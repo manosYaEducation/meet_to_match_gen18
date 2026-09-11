@@ -99,11 +99,22 @@ function poblarFiltroCargos() {
   const vistos = new Set();
 
   usuarios.forEach((usuario) => {
-    const cargo = String(usuario.cargo || '').trim();
-    if (!cargo || vistos.has(cargo.toLowerCase())) return;
-    vistos.add(cargo.toLowerCase());
-    cargos.push(cargo);
+    const cargoStr = String(usuario.cargo || '').trim();
+    if (!cargoStr) return;
+    
+    const cargosArray = cargoStr.split(',').map(c => c.trim()).filter(c => c.length > 0);
+    
+    cargosArray.forEach(cargo => {
+      const cargoLower = cargo.toLowerCase();
+      if (!vistos.has(cargoLower)) {
+        vistos.add(cargoLower);
+        cargos.push(cargo);
+      }
+    });
   });
+
+  // Opcional: ordenar alfabéticamente para mejor experiencia de usuario
+  cargos.sort((a, b) => a.localeCompare(b));
 
   select.innerHTML = '<option value="">Todos los cargos</option>' + cargos.map((cargo) => `
     <option value="${escapar(cargo)}">${escapar(cargo)}</option>
@@ -144,11 +155,14 @@ function renderParticipantes() {
 
   const filtrados = usuarios.filter((u) => {
     const texto = `${u.nombre} ${u.apellido || ''} ${u.empresa || ''} ${u.cargo || ''} ${u.intereses || ''}`.toLowerCase();
-    const cargoUsuario = String(u.cargo || '').trim().toLowerCase();
+    const cargoUsuario = String(u.cargo || '').toLowerCase();
     const tipoUsuario = String(u.tipo_usuario || '').trim().toLowerCase();
 
     const cumpleTexto = !q || texto.includes(q);
-    const cumpleCargo = !cargo || cargoUsuario === cargo;
+    
+    const cargosArray = cargoUsuario.split(',').map(c => c.trim()).filter(c => c.length > 0);
+    const cumpleCargo = !cargo || cargosArray.includes(cargo);
+    
     const cumpleTipo = !tipo || tipoUsuario === tipo;
 
     return cumpleTexto && cumpleCargo && cumpleTipo;
